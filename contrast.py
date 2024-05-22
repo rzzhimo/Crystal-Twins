@@ -94,6 +94,10 @@ class CrystalContrastive(object):
         structures, _, _ = self.dataset[0]
         orig_atom_fea_len = structures[0].shape[-1]
         nbr_fea_len = structures[1].shape[-1]
+
+        print("orig_atom_fea_len", orig_atom_fea_len)
+        print("nbr_fea_len", nbr_fea_len)
+        
         model = CrystalGraphConvNet(orig_atom_fea_len, nbr_fea_len,
                                     **self.config['model']
         )

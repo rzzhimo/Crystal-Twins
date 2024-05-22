@@ -82,7 +82,7 @@ class CrystalGraphConvNet(nn.Module):
     """
     def __init__(self, orig_atom_fea_len, nbr_fea_len,
                  atom_fea_len=64, n_conv=3, h_fea_len=128, n_h=1, drop_ratio=0.4,
-                 classification=False):
+                 classification=False, additional_dim=64):
         """
         Initialize CrystalGraphConvNet.
 
@@ -106,10 +106,13 @@ class CrystalGraphConvNet(nn.Module):
         self.drop_ratio = drop_ratio
         self.classification = classification
         self.embedding = nn.Linear(orig_atom_fea_len, atom_fea_len)
+        self.additional_embedding = nn.Parameter(torch.randn(additional_dim))  # 新的可学习向量
+
         self.convs = nn.ModuleList([ConvLayer(atom_fea_len=atom_fea_len,
                                     nbr_fea_len=nbr_fea_len)
                                     for _ in range(n_conv)])
-        self.conv_to_fc = nn.Linear(atom_fea_len, h_fea_len)
+        # self.conv_to_fc = nn.Linear(atom_fea_len, h_fea_len)
+        self.conv_to_fc = nn.Linear(atom_fea_len + additional_dim, h_fea_len)  # 注意输入尺寸的调整
         self.conv_to_fc_softplus = nn.Softplus()
 
         if self.classification:
@@ -159,6 +162,11 @@ class CrystalGraphConvNet(nn.Module):
         for conv_func in self.convs:
             atom_fea = conv_func(atom_fea, nbr_fea, nbr_fea_idx)
         crys_fea = self.pooling(atom_fea, crystal_atom_idx)
+
+        # 拼接新的可学习向量
+        expanded_additional_embedding = self.additional_embedding.expand(crys_fea.size(0), -1)
+        crys_fea = torch.cat([crys_fea, expanded_additional_embedding], dim=1)
+
         crys_fea = self.conv_to_fc(self.conv_to_fc_softplus(crys_fea))
         crys_fea = self.conv_to_fc_softplus(crys_fea)
 

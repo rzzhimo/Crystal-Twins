@@ -15,7 +15,7 @@ from torch.utils.data import Dataset, DataLoader
 from torch.utils.data.dataloader import default_collate
 from torch.utils.data.sampler import SubsetRandomSampler
 
-from dataset.augmentation import RotationTransformation, PerturbStructureTransformation, RemoveSitesTransformation
+from datasets.augmentation import RotationTransformation, PerturbStructureTransformation, RemoveSitesTransformation
 
 
 def get_train_val_test_loader(dataset, collate_fn=default_collate,

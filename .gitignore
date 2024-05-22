@@ -1,0 +1,6 @@
+.DS_Store
+__pycache__
+.ipynb_checkpoints
+CT_transfer/datasets/__pycache__/
+CT_transfer/models/__pycache__/
+datasets/__pycache__/

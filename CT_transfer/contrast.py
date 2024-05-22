@@ -17,9 +17,9 @@ from torch.autograd import Variable
 from torch.optim.lr_scheduler import CosineAnnealingLR
 from torch.utils.tensorboard import SummaryWriter
 
-from dataset.data_pretrain_mask import CIFData
-from dataset.data_pretrain_mask import collate_pool, get_train_val_test_loader
-from model.cgcnn_pretrain import CrystalGraphConvNet
+from datasets.data_pretrain_mask import CIFData
+from datasets.data_pretrain_mask import collate_pool, get_train_val_test_loader
+from models.cgcnn_pretrain import CrystalGraphConvNet
 from loss.barlow_twins import BarlowTwinsLoss
 
 from torch.nn.parallel import DistributedDataParallel as DDP

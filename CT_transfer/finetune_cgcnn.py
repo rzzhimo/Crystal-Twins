@@ -18,9 +18,9 @@ from torch.autograd import Variable
 from torch.optim.lr_scheduler import CosineAnnealingLR
 from torch.utils.tensorboard import SummaryWriter
 
-from dataset.data_finetune import CIFData
-from dataset.data_finetune import collate_pool, get_train_val_test_loader
-from model.cgcnn_finetune import CrystalGraphConvNet
+from datasets.data_finetune import CIFData
+from datasets.data_finetune import collate_pool, get_train_val_test_loader
+from models.cgcnn_finetune import CrystalGraphConvNet
 
 import warnings
 warnings.simplefilter("ignore")

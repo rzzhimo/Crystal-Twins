@@ -17,9 +17,9 @@ from torch.autograd import Variable
 from torch.optim.lr_scheduler import CosineAnnealingLR
 from torch.utils.tensorboard import SummaryWriter
 
-from dataset.data_pretrain import CIFData
-from dataset.data_pretrain import collate_pool, get_train_val_test_loader
-from model.cgcnn_pretrain import CrystalGraphConvNet
+from datasets.data_pretrain import CIFData
+from datasets.data_pretrain import collate_pool, get_train_val_test_loader
+from models.cgcnn_pretrain import CrystalGraphConvNet
 from loss.barlow_twins import BarlowTwinsLoss
 
 import warnings

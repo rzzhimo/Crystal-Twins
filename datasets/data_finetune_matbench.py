@@ -80,7 +80,8 @@ def get_train_val_test_loader(train_dataset, test_dataset, collate_fn=default_co
     valid_size = len(test_dataset)
     test_size = len(test_dataset)
 
-    train_size = len(train_dataset) - valid_size
+    # train_size = len(train_dataset) - valid_size
+    train_size = len(train_dataset)
 
     print('Train size: {}, Validation size: {}, Test size: {}'.format(
         train_size, valid_size, test_size
@@ -316,13 +317,16 @@ class CIF_train_val_Data(Dataset):
     target: torch.Tensor shape (1, )
     cif_id: str or int
     """
-    def __init__(self,task_type, subset_data, fold_num, max_num_nbr=12, radius=8, dmin=0, step=0.2):
+    def __init__(self,task_type, subset_data, fold_num, max_num_nbr=12, radius=8, dmin=0, step=0.2, limit=None):
         
         self.mb = MatbenchBenchmark(autoload=False,subset=[subset_data])
         
         for task in self.mb.tasks:
             task.load()
             train_df = task.get_train_and_val_data(fold_num, as_type="df")
+            if limit is not None:
+                train_df = train_df.iloc[:limit]  # 只使用前limit个样本
+        # print(f"train_df.len: {len(train_df)}")
         # self.root_dir = root_dir
         self.task_type = task_type
         self.max_num_nbr, self.radius = max_num_nbr, radius
@@ -439,13 +443,15 @@ class CIF_test_Data(Dataset):
     target: torch.Tensor shape (1, )
     cif_id: str or int
     """
-    def __init__(self,task_type, subset_data, fold_num, max_num_nbr=12, radius=8, dmin=0, step=0.2):
+    def __init__(self,task_type, subset_data, fold_num, max_num_nbr=12, radius=8, dmin=0, step=0.2, limit=None,):
         
         self.mb_test = MatbenchBenchmark(autoload=False,subset=[subset_data])
         
         for task in self.mb_test.tasks:
             task.load()
             test_df = task.get_test_data(fold_num, include_target=True, as_type="df")
+            if limit is not None:
+                test_df = test_df.iloc[:limit]  # 只使用前limit个样本
         # self.root_dir = root_dir
         self.task_type = task_type
         self.max_num_nbr, self.radius = max_num_nbr, radius

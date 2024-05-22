@@ -48,8 +48,8 @@ class FineTune(object):
         else:
             self.criterion = nn.MSELoss()
 
-        self.train_dataset = CIF_train_val_Data(task_type = self.config['task_type'], subset_data = self.config['data_name'], **self.config['dataset'])
-        self.test_dataset  = CIF_test_Data(task_type = self.config['task_type'], subset_data = self.config['data_name'], **self.config['dataset']) 
+        self.train_dataset = CIF_train_val_Data(task_type = self.config['task_type'], subset_data = self.config['data_name'], **self.config['dataset'], limit=50)
+        self.test_dataset  = CIF_test_Data(task_type = self.config['task_type'], subset_data = self.config['data_name'], **self.config['dataset'], limit=450) 
 
         self.random_seed = self.config['random_seed']
         collate_fn = collate_pool
@@ -238,6 +238,9 @@ class FineTune(object):
             for name, param in load_state.items():
                 if name not in model_state:
                     print('NOT loaded:', name)
+                    continue
+                if model_state[name].shape != param.shape:
+                    print(f"Skipping {name} due to size mismatch: model_size={model_state[name].shape}, loaded_size={param.shape}")
                     continue
                 else:
                     print('loaded:', name)
@@ -547,6 +550,9 @@ if __name__ == "__main__":
     # elif 'jdft2d' in config['dataset']['root_dir']:
     #     config['task'] = 'regression'
     #     task_name = 'jdft2d'
+    # elif 'mp_is_metal' in config['dataset']['root_dir']:
+    #     config['task'] = 'regression'
+    #     task_name = 'is_mental'
     elif 'phonons' in config['data_name']:
         config['task_type'] = 'regression'
         task_name = 'phonons'
